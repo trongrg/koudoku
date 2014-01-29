@@ -70,8 +70,11 @@ module Koudoku::Subscription
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
+                plan: plan.stripe_id
               }
+              if plan.price > 0.0 and !credit_card_token.blank?
+                customer_attributes[:card] = credit_card_token # obtained with Stripe.js
+              end
 
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
@@ -96,7 +99,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.cards.retrieve(customer.default_card).last4
+            self.last_four = customer.cards.retrieve(customer.default_card).last4  unless credit_card_token.blank?
 
             finalize_new_subscription!
             finalize_upgrade!

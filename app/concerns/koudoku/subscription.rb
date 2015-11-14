@@ -99,7 +99,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.sources.retrieve(customer.default_source).last4
+            self.last_four = customer.sources.retrieve(customer.default_source).last4 if customer.default_source.present?
 
             finalize_new_subscription!
             finalize_upgrade!
@@ -136,8 +136,8 @@ module Koudoku::Subscription
       end
     end
   end
-  
-  
+
+
   def describe_difference(plan_to_describe)
     if plan.nil?
       if persisted?

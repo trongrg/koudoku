@@ -73,7 +73,7 @@ module Koudoku::Subscription
                 plan: plan.stripe_id
               }
               if plan.price > 0.0 and credit_card_token.present?
-                customer_attributes[:card] = credit_card_token # obtained with Stripe.js
+                customer_attributes[:source] = credit_card_token # obtained with Stripe.js
               end
 
               # If the class we're being included in supports coupons ..
